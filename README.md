@@ -1,2 +1,2 @@
 # thejobber
-Backend code for the Codechef project "Jobber"
+Backend for the Codechef project "TheJobber"
