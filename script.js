@@ -18,34 +18,24 @@ db.connect((err)=>{
 
 })
 
-        let sql1 = 'CREATE TABLE usertable(id int AUTO_INCREMENT,empid int(4),bidderid int(4), workerid int(4), name VARCHAR(255), email VARCHAR(255), address VARCHAR(255), phnum int(10), paymentid VARCHAR(255), rating int(1), PRIMARY KEY(id), uid int(4),ADD FOREIGN KEY(empid) REFERENCES jobtable(empid),ADD FOREIGN KEY(bidderid) REFERENCES bidtable(bidderid),ADD FOREIGN KEY(workerid) REFERENCES jobtable(workerid))';
+        let sql1 = 'CREATE TABLE usertable(id VARCHAR(40),empid int(4),bidderid int(4), workerid int(4), name VARCHAR(255), email VARCHAR(255), address VARCHAR(255), phnum int(10), paymentid VARCHAR(255), rating int(1), PRIMARY KEY(id))';
 
         db.query(sql1 , (err, result)=>{
             if(err) throw err;
             console.log(result);
         })
 
-        let sql2 = 'CREATE TABLE jobtable(id int AUTO_INCREMENT, empid int(4),jobid int(4), description VARCHAR(255), maxwage int(2), durationto VARCHAR(2), durationfrom VARCHAR(2), status VARCHAR(255), workerid int(4), PRIMARY KEY(id),ADD FOREIGN KEY(jobid) REFERENCES bidtable(jobid))';
+        let sql2 = 'CREATE TABLE jobtable(id VARCHAR(40), description VARCHAR(255), maxwage int(2), durationto TIME(0), durationfrom TIME(0), status VARCHAR(255), PRIMARY KEY(id),timestamp TIMESTAMP, empid varchar(40) REFERENCES usertable(id),workerid varchar(40) REFERENCES usertable(id))';
         db.query(sql2 , (err, result)=>{
             if(err) throw err;
             console.log(result);
         })
 
 
-        let sql3 = 'CREATE TABLE bidtable(id int AUTO_INCREMENT, bidderid int(4),status VARCHAR(255), jobid int(4), bidid int(4), PRIMARY KEY(id))';
+        let sql3 = 'CREATE TABLE bidtable(id VARCHAR(40),status VARCHAR(255), jobid varchar(40) REFERENCES jobtable(id),bidderid varchar(40) REFERENCES usertable(id), bidid int(4), timestamp TIMESTAMP,PRIMARY KEY(id))';
         db.query(sql3 , (err, result)=>{
             if(err) throw err;
             console.log(result);
         })
-
-
-// //for dele0ting table
-// app.get('/delete', (req, res)=>{
-//     var sql = "DROP DATABASE ccsqlnew";
-//     db.query(sql, (err, result)=>{
-//         if (err) throw err;
-//         console.log('database deleted');
-//     })
-// })
 
 

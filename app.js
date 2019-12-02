@@ -2,6 +2,8 @@ const express =require("express");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const app = express()
+const uuidv4 = require('uuid/v4');
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -10,7 +12,7 @@ const db = mysql.createConnection({
     host : 'localhost',
     user: 'root',
     password : '',
-    database: 'ccsqlnew'  //to use the ccsql database
+    database: 'ccsql1'  //to use the ccsql database
 });
 
 //Connect                               
@@ -23,45 +25,57 @@ db.connect((err)=>{
 
 })
 // for sign in
-app.post('/user/signup', function(req, res){
-    sql = "INSERT INTO usertable(id, name, email, address, phnum, paymentid, rating, uid) VALUES ('5959', 'rishabh', 'rb@gmail.com', 'vellore institute of technology vellore', '9928160595', 'upiid', '7', '11')";
+app.post('/user/signup', (req, res)=>{
 
-    db.query(sql , (err, result)=>{
+    var id = uuidv4();
+    var name = req.body.name;
+    var email= req.body.email;
+    var address = req.body.address;
+    var phnum = req.body.phnum;
+    var paymentid = req.body.payid;
+    var rating = req.body.rating;
+
+    sql = "INSERT INTO usertable VALUES(?,?,?,?,?,?,?)";
+
+    db.query(sql,[id,name,email,address,phnum,paymentid,rating],(err, result)=>{
         if(err) throw err;
         console.log(result);
         res.send("Signup Successful");
     })
-    db.query('UPDATE usertable SET id = FLOOR( 1 + RAND( ) *3000)')
-    db.query('UPDATE usertable SET uid = FLOOR( 1 + RAND( ) *3000)')
 })
 
 //for posting the job   
-app.post('/job', function(req, res){
-    sql = "INSERT INTO jobtable(id, empid, description, maxwage, durationto, durationfrom, status, workerid) VALUES ('5959', '511', 'Need a Job', '200', '430', '530', 'Active', '11')";
+app.post('/job', (req, res)=>{
 
-    db.query(sql , (err, result)=>{
+    var id = uuidv4();
+    var description= req.body.desc;
+    var maxwage = req.body.max;
+    var durationto = req.body.durto;
+    var durationfrom = req.body.durfrom;
+    var status = req.body.status;
+    sql = "INSERT INTO jobtable(id, description, maxwage, durationto, durationfrom, status) VALUES (?,?,?,?,?,?)";
+
+    db.query(sql,[id, description,maxwage,durationto,durationto,durationfrom,status] ,(err, result)=>{
         if(err) throw err;
         console.log(result);
         res.send("Job Added Successfully");
     })
-    db.query('UPDATE jobtable SET id = FLOOR( 1 + RAND( ) *3000)');
-    db.query('UPDATE jobtable SET empid = FLOOR( 1 + RAND( ) *3000)');
-    db.query('UPDATE jobtable SET workerid = FLOOR( 1 + RAND( ) *3000)');
 })
 
 //for posting the bid
-app.post('/bid', function(req, res){
-    sql = "INSERT INTO bidtable(id, bidderid, status, jobid, bidid) VALUES ('5959', '511', 'Active', '323', '434')";
+app.post('/bid', (req, res)=>{
 
-    db.query(sql , (err, result)=>{
+    var id = uuidv4();
+    var status = req.body.status;
+    var timestamp = req.body.timest;
+
+    sql = "INSERT INTO bidtable(id, status, timestamp) VALUES (?,?,?)";
+
+    db.query(sql,[id, status,timestamp], (err, result)=>{
         if(err) throw err;
         console.log(result);
         res.send("Bid Data Added Successfully");
     })
-    db.query('UPDATE bidtable SET id = FLOOR( 1 + RAND( ) *3000)');
-    db.query('UPDATE bidtable SET bidderid = FLOOR( 1 + RAND( ) *3000)');
-    db.query('UPDATE bidtable SET jobid = FLOOR( 1 + RAND( ) *3000)');
-    db.query('UPDATE bidtable SET bidid = FLOOR( 1 + RAND( ) *3000)');
 })
 
 app.listen(port='1337',() =>{
