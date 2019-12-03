@@ -1,8 +1,9 @@
 const express =require("express");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
-const app = express()
+const app = express();
 const uuidv4 = require('uuid/v4');
+const bcrypt = require('bcrypt');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -30,18 +31,24 @@ app.post('/user/signup', (req, res)=>{
     var id = uuidv4();
     var name = req.body.name;
     var email= req.body.email;
+    // var password = req.body.password;
     var address = req.body.address;
     var phnum = req.body.phnum;
     var paymentid = req.body.payid;
     var rating = req.body.rating;
 
-    sql = "INSERT INTO usertable VALUES(?,?,?,?,?,?,?)";
+   bcrypt.hash(req.body.password, 3, function(err, hash){
+        if (err) throw err;
+    
+    sql = "INSERT INTO usertable VALUES(?,?,?,?,?,?,?,?)";
 
-    db.query(sql,[id,name,email,address,phnum,paymentid,rating],(err, result)=>{
+    db.query(sql,[id,name,email,address,phnum,paymentid,rating, hash],(err, result)=>{
         if(err) throw err;
         console.log(result);
         res.send("Signup Successful");
     })
+})
+
 })
 
 //for posting the job   
