@@ -18,7 +18,7 @@ db.connect((err)=>{
 
 })
 
-        let sql1 = 'CREATE TABLE usertable(id VARCHAR(40), name VARCHAR(255),password CHAR(255), email VARCHAR(255), address VARCHAR(255), phnum int(10), paymentid VARCHAR(255), rating int(1), PRIMARY KEY(id))';
+        let sql1 = 'CREATE TABLE usertable(id VARCHAR(40), name VARCHAR(255),password CHAR(255), email VARCHAR(255), address VARCHAR(255), phnum VARCHAR(10), paymentid VARCHAR(255), rating int(1), PRIMARY KEY(id))';
 
         db.query(sql1 , (err, result)=>{
             if(err) throw err;
@@ -32,7 +32,7 @@ db.connect((err)=>{
         })
 
 
-        let sql3 = 'CREATE TABLE bidtable(id VARCHAR(40),status VARCHAR(255),jobid VARCHAR(40), FOREIGN KEY (jobid) REFERENCES jobtable(id),bidderid VARCHAR(40),FOREIGN KEY (bidderid) REFERENCES usertable(id), timestamp TIMESTAMP,PRIMARY KEY(id))';
+        let sql3 = 'CREATE TABLE bidtable(id VARCHAR(40),status VARCHAR(255),jobid VARCHAR(40), FOREIGN KEY (jobid) REFERENCES jobtable(id),bidderid VARCHAR(40),FOREIGN KEY (bidderid) REFERENCES usertable(id), duration VARCHAR(5),PRIMARY KEY(id))';
         db.query(sql3 , (err, result)=>{
             if(err) throw err;
             console.log(result);

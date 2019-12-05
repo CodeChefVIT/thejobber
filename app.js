@@ -31,7 +31,6 @@ app.post('/user/signup', (req, res)=>{
     var id = uuidv4();
     var name = req.body.name;
     var email= req.body.email;
-    // var password = req.body.password;
     var address = req.body.address;
     var phnum = req.body.phnum;
     var paymentid = req.body.payid;
@@ -40,9 +39,9 @@ app.post('/user/signup', (req, res)=>{
    bcrypt.hash(req.body.password, 3, function(err, hash){
         if (err) throw err;
     
-    sql = "INSERT INTO usertable VALUES(?,?,?,?,?,?,?,?)";
+    sql = "INSERT INTO usertable(id,name,password,email,address,phnum,paymentid,rating) VALUES(?,?,?,?,?,?,?,?)";
 
-    db.query(sql,[id,name,email,address,phnum,paymentid,rating, hash],(err, result)=>{
+    db.query(sql,[id,name,hash,email,address,phnum,paymentid,rating],(err, result)=>{
         if(err) throw err;
         console.log(result);
         res.send("Signup Successful");
@@ -51,7 +50,7 @@ app.post('/user/signup', (req, res)=>{
 
 })
 
-//for posting the job   
+//for posting the job
 app.post('/job', (req, res)=>{
 
     var id = uuidv4();
@@ -62,7 +61,7 @@ app.post('/job', (req, res)=>{
     var status = req.body.status;
     sql = "INSERT INTO jobtable(id, description, maxwage, durationto, durationfrom, status) VALUES (?,?,?,?,?,?)";
 
-    db.query(sql,[id, description,maxwage,durationto,durationto,durationfrom,status] ,(err, result)=>{
+    db.query(sql,[id, description,maxwage,durationto,durationfrom,status] ,(err, result)=>{
         if(err) throw err;
         console.log(result);
         res.send("Job Added Successfully");
@@ -74,11 +73,11 @@ app.post('/bid', (req, res)=>{
 
     var id = uuidv4();
     var status = req.body.status;
-    var timestamp = req.body.timest;
+    var duration = req.body.timest;
 
-    sql = "INSERT INTO bidtable(id, status, timestamp) VALUES (?,?,?)";
+    sql = "INSERT INTO bidtable(id, status, duration) VALUES (?,?,?)";
 
-    db.query(sql,[id, status,timestamp], (err, result)=>{
+    db.query(sql,[id, status,duration], (err, result)=>{
         if(err) throw err;
         console.log(result);
         res.send("Bid Data Added Successfully");
@@ -86,6 +85,5 @@ app.post('/bid', (req, res)=>{
 })
 
 app.listen(port='1337',() =>{
-    console.log("Server started on port " + port);
-    
+    console.log("Server started on port " + port); 
 });

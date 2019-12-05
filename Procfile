@@ -1,0 +1,1 @@
+web: ./app.js runserver 0.0.0.0:$PORT
