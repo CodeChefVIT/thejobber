@@ -27,7 +27,7 @@ db.connect((err)=>{
 })
 // for sign in
 app.post('/user/signup', (req, res)=>{
-
+    
     var id = uuidv4();
     var name = req.body.name;
     var email= req.body.email;
@@ -42,9 +42,9 @@ app.post('/user/signup', (req, res)=>{
     sql = "INSERT INTO usertable(id,name,password,email,address,phnum,paymentid,rating) VALUES(?,?,?,?,?,?,?,?)";
 
     db.query(sql,[id,name,hash,email,address,phnum,paymentid,rating],(err, result)=>{
-        if(err) throw err;
+        if(err) res.send({message:"Error",status:401})
         console.log(result);
-        res.send("Signup Successful");
+        res.send({message:"Signup Successful",status:200});
     })
 })
 
