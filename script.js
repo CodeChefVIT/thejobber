@@ -5,7 +5,7 @@ const db = mysql.createConnection({
     host : 'localhost',
     user: 'root',
     password : '',
-    database: 'ccsql1'  //to use the ccsql database
+    database: 'test1'  //to use the ccsql database
 });
 
 //Connect                               
@@ -18,34 +18,53 @@ db.connect((err)=>{
 
 })
 
-        let sql1 = 'CREATE TABLE usertable(id int AUTO_INCREMENT,empid int(4),bidderid int(4), workerid int(4), name VARCHAR(255), email VARCHAR(255), address VARCHAR(255), phnum int(10), paymentid VARCHAR(255), rating int(1), PRIMARY KEY(id), uid int(4),ADD FOREIGN KEY(empid) REFERENCES jobtable(empid),ADD FOREIGN KEY(bidderid) REFERENCES bidtable(bidderid),ADD FOREIGN KEY(workerid) REFERENCES jobtable(workerid))';
+
+//First
+const firstTable=()=>{
+    return new Promise((resolve,reject)=>{
+        let sql1 = 'CREATE TABLE usertable(id VARCHAR(40), name VARCHAR(255),password CHAR(255), email VARCHAR(255), address VARCHAR(255), phnum VARCHAR(10), paymentid VARCHAR(255), rating int(1), PRIMARY KEY(id))';
 
         db.query(sql1 , (err, result)=>{
-            if(err) throw err;
-            console.log(result);
+            if(err) reject(err);
+            resolve("User Table Created")
         })
 
-        let sql2 = 'CREATE TABLE jobtable(id int AUTO_INCREMENT, empid int(4),jobid int(4), description VARCHAR(255), maxwage int(2), durationto VARCHAR(2), durationfrom VARCHAR(2), status VARCHAR(255), workerid int(4), PRIMARY KEY(id),ADD FOREIGN KEY(jobid) REFERENCES bidtable(jobid))';
+    })
+}
+//Second
+const secondTable=()=>{
+    return new Promise((resolve,reject)=>{
+        let sql2 = 'CREATE TABLE jobtable(id VARCHAR(40), description VARCHAR(255), maxwage int(2), durationto TIME(0), durationfrom TIME(0), status VARCHAR(255), PRIMARY KEY(id),timestamp TIMESTAMP,workerid VARCHAR(40), FOREIGN KEY (workerid) REFERENCES usertable(id),empid VARCHAR(40),FOREIGN KEY (empid) REFERENCES usertable(id))';
         db.query(sql2 , (err, result)=>{
-            if(err) throw err;
-            console.log(result);
+            if(err) reject(err);
+            resolve("Job Table Created");
         })
-
-
-        let sql3 = 'CREATE TABLE bidtable(id int AUTO_INCREMENT, bidderid int(4),status VARCHAR(255), jobid int(4), bidid int(4), PRIMARY KEY(id))';
+    })
+} 
+//Third
+const thirdTable=()=>{
+    return new Promise((resolve,reject)=>{
+        let sql3 = 'CREATE TABLE bidtable(id VARCHAR(40),status VARCHAR(255),jobid VARCHAR(40), FOREIGN KEY (jobid) REFERENCES jobtable(id),bidderid VARCHAR(40),FOREIGN KEY (bidderid) REFERENCES usertable(id), duration VARCHAR(5),PRIMARY KEY(id))';
         db.query(sql3 , (err, result)=>{
             if(err) throw err;
-            console.log(result);
+            resolve("Bid Table Created");
+            // console.log(result);
         })
+        })
+}
 
-
-// //for dele0ting table
-// app.get('/delete', (req, res)=>{
-//     var sql = "DROP DATABASE ccsqlnew";
-//     db.query(sql, (err, result)=>{
-//         if (err) throw err;
-//         console.log('database deleted');
-//     })
-// })
-
-
+firstTable().then(res1=>{
+    console.log(res1);
+    secondTable().then(res2=>{
+        console.log(res2)
+        thirdTable().then(res3=>{
+            console.log("Bid Table Created");
+        }).catch((err)=>{
+            console.log("Error in Bid table.")
+        })
+    }).catch((err)=>{
+        console.log("Error in Job table.")
+    })
+}).catch(err=>{
+    console.log("Error in User table.")
+})
