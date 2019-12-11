@@ -13,7 +13,7 @@ const db = mysql.createConnection({
     host : 'localhost',
     user: 'root',
     password : '',
-    database: 'ccsql1'  //to use the ccsql database
+    database: 'test1'  //to use the ccsql database
 });
 
 //Connect                               
@@ -47,8 +47,27 @@ app.post('/user/signup', (req, res)=>{
         res.send({message:"Signup Successful",status:200});
     })
 })
-
 })
+
+//for login
+app.post('/user/login', (req,res)=>{
+
+    var email = req.body.email;
+
+    sql="SELECT email FROM usertable WHERE email= ?";
+
+    db.query(sql,[email],(err, result)=>{
+        if(err) throw err;
+        console.log(result[0]);
+        if(result[0] == null){  
+            res.send("User not registered.");
+        }else if(result[0] != null){
+            res.send("Login Successful.");
+        }
+    })
+    
+})
+
 
 //for posting the job
 app.post('/job', (req, res)=>{
