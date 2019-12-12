@@ -18,7 +18,6 @@ db.connect((err)=>{
 
 })
 
-
 //First
 const firstTable=()=>{
     return new Promise((resolve,reject)=>{
