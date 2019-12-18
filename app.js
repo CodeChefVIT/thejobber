@@ -40,8 +40,8 @@ app.post('/user/signup', (req, res)=>{
         //jwt middleware
         const user ={
             id:id,
-            name:req.body.name,
-            email :req.body.email,
+            name,
+            email
         }
     
         jwt.sign({user:user}, { expiresIn: '120s' },'secretkey', (err, token) => {
@@ -72,7 +72,7 @@ app.post('/user/login', (req,res)=>{
     //jwt middleware
     const user ={
         id:1,
-        email :email,
+        email
     }
 
     jwt.sign({user:user}, { expiresIn: '120s' },'secretkey', (err, token) => {
