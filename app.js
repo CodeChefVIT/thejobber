@@ -29,11 +29,19 @@ db.connect((err)=>{
 // for sign in
 app.post('/user/signup', (req, res)=>{
     
+        var id = uuidv4();
+        var name = req.body.name;
+        var email= req.body.email;
+        var address = req.body.address;
+        var phnum = req.body.phnum;
+        var paymentid = req.body.payid;
+        var rating = req.body.rating;
+        
         //jwt middleware
         const user ={
-            id:1,
-            username:'e33or_assasin',
-            email :'jdoe@gmail.com',
+            id:id,
+            name:req.body.name,
+            email :req.body.email,
         }
     
         jwt.sign({user:user}, { expiresIn: '120s' },'secretkey', (err, token) => {
@@ -42,14 +50,6 @@ app.post('/user/signup', (req, res)=>{
                     token:token
             })
         })
-    
-    var id = uuidv4();
-    var name = req.body.name;
-    var email= req.body.email;
-    var address = req.body.address;
-    var phnum = req.body.phnum;
-    var paymentid = req.body.payid;
-    var rating = req.body.rating;
 
    bcrypt.hash(req.body.password, 3, function(err, hash){
         if (err) throw err;
@@ -67,12 +67,12 @@ app.post('/user/signup', (req, res)=>{
 //for login
 app.post('/user/login', (req,res)=>{
 
-
+    var email = req.body.email;
+    var password = req.body.password;
     //jwt middleware
     const user ={
         id:1,
-        username:'e33or_assasin',
-        email :'jdoe@gmail.com',
+        email :email,
     }
 
     jwt.sign({user:user}, { expiresIn: '120s' },'secretkey', (err, token) => {
@@ -82,9 +82,6 @@ app.post('/user/login', (req,res)=>{
         })
     })
 
-    var email = req.body.email;
-    var password = req.body.password;
-
     sql="SELECT email FROM usertable WHERE email= ?";
 
     db.query(sql,[email],(err, result)=>{
@@ -92,8 +89,19 @@ app.post('/user/login', (req,res)=>{
         // console.log(result[0]);
         if(result[0] == null){  
             console.log("User not registered.");
-        }else if(result[0] != null){
-            console.log("Login Successful.");
+        }else{
+            bcryptjs.compare(password, user.password, function (err, result) {
+                if (result == false) {
+                    res.json('Invalid Password')
+            
+                } else {
+                    res.json({
+                        response:'Login successful',
+                        name:user.name,
+                        email
+                    })
+                }
+            })
         }
     })
     
@@ -162,7 +170,7 @@ app.post('/bid', verifyToken ,(req, res)=>{
 //tokenverification
 function verifyToken(req, res, next){
 
-    //get auth header
+    //get bearer header
     const authHeader = req.headers['authorization'];
 
     if(typeof authHeader !== 'undefined'){
